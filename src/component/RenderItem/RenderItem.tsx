@@ -1,17 +1,29 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getProducts } from "@/lib/api/profile";
+import { getProducts, getStoreProfile } from "@/lib/api/profile";
 import styles from "./RenderItem.module.css";
 import Image from "next/image";
 import Icon from "../Icon/Icon";
 import { useRouter } from "next/navigation";
+import ContextMenu from "../ContextMenu/ContextMenu";
 
 export default function RenderItem() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>();
+  const [store, setStore] = useState<StoreProfile>();
 
-  const openItem = (id: number) => {
-    router.push(`/products/${id}`);
+  const ContextMenuProps = [
+    { id: 1, icon: "edit", title: "Edit", action: <div>Edit Action</div> },
+    {
+      id: 2,
+      icon: "delete",
+      title: "Delete",
+      action: <div>Delete Action</div>,
+    },
+  ];
+
+  const openItem = (productId: number, storeId: number | undefined) => {
+    router.push(`/products/${productId}.${storeId}`);
   };
 
   const openContextMenu = (id: number) => {
@@ -24,6 +36,13 @@ export default function RenderItem() {
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+
+    try {
+      const data = await getStoreProfile();
+      setStore(data);
+    } catch (error) {
+      console.error("Error fetching store profile:", error);
     }
   };
 
@@ -42,7 +61,7 @@ export default function RenderItem() {
           <li
             className={styles.item}
             key={data.id}
-            onDoubleClick={() => openItem(data.id)}
+            onDoubleClick={() => openItem(data.id, store?.id)}
             onContextMenu={(e) => {
               e.preventDefault();
               openContextMenu(data.id);
@@ -60,22 +79,24 @@ export default function RenderItem() {
             </div>
             <div className={styles.itemDescription}>
               <span>29/11/2025</span>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  openContextMenu(data.id);
-                }}
-                onDoubleClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-                onContextMenu={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-              >
-                <Icon name="dots" width={20} />
-              </button>
+              <ContextMenu type="dobleClick" items={ContextMenuProps}>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openContextMenu(data.id);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                  onContextMenu={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                >
+                  <Icon name="dots" width={20} />
+                </button>
+              </ContextMenu>
             </div>
           </li>
         ))}

@@ -19,9 +19,13 @@
 
 .itemList {
   width: 100%;
+  height: max-content;
+  max-height: calc(100dvh - 97px);
   padding: var(--space-4);
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   user-select: none;
 }
 

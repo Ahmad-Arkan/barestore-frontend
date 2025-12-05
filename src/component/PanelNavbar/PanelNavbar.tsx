@@ -15,7 +15,6 @@ export default function PanelNavbar({ status }: { status: string }) {
   const fetchData = async () => {
     try {
       const data = await getUser(1);
-      console.log("User Data:", data);
       setUserData(data);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -59,23 +58,6 @@ export default function PanelNavbar({ status }: { status: string }) {
           </Link>
         </li>
         <li>
-          <Link href={"/statistic"}>
-            <button
-              className={
-                status == "statistic"
-                  ? `${styles.iconActive}`
-                  : `${styles.icon}`
-              }
-            >
-              <Icon
-                name={status == "statistic" ? "piechartActive" : "piechart"}
-                width={32}
-              />
-            </button>
-            <span>Statistic</span>
-          </Link>
-        </li>
-        <li>
           <Link href={"/products"}>
             <button
               className={
@@ -103,6 +85,23 @@ export default function PanelNavbar({ status }: { status: string }) {
               />
             </button>
             <span>Staff</span>
+          </Link>
+        </li>
+        <li>
+          <Link href={"/statistic"}>
+            <button
+              className={
+                status == "statistic"
+                  ? `${styles.iconActive}`
+                  : `${styles.icon}`
+              }
+            >
+              <Icon
+                name={status == "statistic" ? "piechartActive" : "piechart"}
+                width={32}
+              />
+            </button>
+            <span>Statistic</span>
           </Link>
         </li>
         <li>
